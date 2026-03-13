@@ -1,14 +1,13 @@
-# astrbot-plugin-helloworld
+# AstrBot 塔科夫BOSS刷新率插件
 
-AstrBot 插件模板 / A template plugin for AstrBot plugin feature
+一个用于查询《逃离塔科夫》BOSS刷新率的 AstrBot 插件。数据来源于 Tarkov API，实时更新。
 
-> [!NOTE]
-> This repo is just a template of [AstrBot](https://github.com/AstrBotDevs/AstrBot) Plugin.
-> 
-> [AstrBot](https://github.com/AstrBotDevs/AstrBot) is an agentic assistant for both personal and group conversations. It can be deployed across dozens of mainstream instant messaging platforms, including QQ, Telegram, Feishu, DingTalk, Slack, LINE, Discord, Matrix, etc. In addition, it provides a reliable and extensible conversational AI infrastructure for individuals, developers, and teams. Whether you need a personal AI companion, an intelligent customer support agent, an automation assistant, or an enterprise knowledge base, AstrBot enables you to quickly build AI applications directly within your existing messaging workflows.
+## ✨ 功能特点
 
-# Supports
+- 🎯 **实时查询**：获取所有地图的BOSS刷新率
+- 🔄 **自动更新**：数据与Tarkov API同步，无需手动维护
+- 🌏 **中文显示**：地图和BOSS名称自动转换为中文
 
-- [AstrBot Repo](https://github.com/AstrBotDevs/AstrBot)
-- [AstrBot Plugin Development Docs (Chinese)](https://docs.astrbot.app/dev/star/plugin-new.html)
-- [AstrBot Plugin Development Docs (English)](https://docs.astrbot.app/en/dev/star/plugin-new.html)
+🔧 使用方法
+基本命令
+/boss - 查询所有地图的BOSS刷新率
