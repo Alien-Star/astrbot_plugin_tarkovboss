@@ -13,38 +13,7 @@ class TarkovBossAPIPlugin(Star):
         super().__init__(context)
         self.api_url = "https://api.tarkov.dev/graphql"
 
-    @filter.command("boss_debug")
-    async def boss_debug(self, event: AstrMessageEvent):
-        '''查看API返回的原始BOSS名称'''
-        try:
-            query = """
-            {
-            maps {
-                name
-                bosses {
-                name
-                }
-            }
-            }
-            """
-            async with aiohttp.ClientSession() as session:
-                async with session.post(self.api_url, json={"query": query}) as resp:
-                    data = await resp.json()
-                    
-                    # 提取所有不重复的BOSS名称
-                    boss_names = set()
-                    for map_data in data.get("data", {}).get("maps", []):
-                        for boss in map_data.get("bosses", []):
-                            boss_names.add(boss.get("name", "未知"))
-                    
-                    # 排序后显示
-                    boss_list = sorted(list(boss_names))
-                    result = "API返回的BOSS名称列表：\n" + "\n".join(boss_list)
-                    yield event.plain_result(result)
-        except Exception as e:
-            yield event.plain_result(f"调试出错: {str(e)}")
-        
-    @filter.command("boss")
+    @filter.command("boss", alias=["boss"])
     async def boss_spawn_api(self, event: AstrMessageEvent):
         '''查询BOSS刷新率（使用API）'''
         # 直接发送结果，不使用图片转换
@@ -142,7 +111,7 @@ class TarkovBossAPIPlugin(Star):
 
 
             maps = data["data"]["maps"]
-            result = ["📊 **塔科夫BOSS刷新率**", "=" * 35]
+            result = ["📊 **塔科夫BOSS刷新率**", "=" * 30]
             
             # 按地图名称排序
             maps.sort(key=lambda x: x.get("name", ""))
@@ -179,7 +148,7 @@ class TarkovBossAPIPlugin(Star):
                         
                         result.append(f"  👾 {boss_name_cn}: {chance_str}")
             
-            result.append("\n" + "=" * 35)
+            result.append("\n" + "=" * 30)
             result.append("📌 数据来源: Tarkov API | 实时更新")
             
             return "\n".join(result)
