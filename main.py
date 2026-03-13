@@ -11,6 +11,37 @@ class TarkovBossAPIPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)
         self.api_url = "https://api.tarkov.dev/graphql"
+
+    @filter.command("boss_debug")
+    async def boss_debug(self, event: AstrMessageEvent):
+        '''查看API返回的原始BOSS名称'''
+        try:
+            query = """
+            {
+            maps {
+                name
+                bosses {
+                name
+                }
+            }
+            }
+            """
+            async with aiohttp.ClientSession() as session:
+                async with session.post(self.api_url, json={"query": query}) as resp:
+                    data = await resp.json()
+                    
+                    # 提取所有不重复的BOSS名称
+                    boss_names = set()
+                    for map_data in data.get("data", {}).get("maps", []):
+                        for boss in map_data.get("bosses", []):
+                            boss_names.add(boss.get("name", "未知"))
+                    
+                    # 排序后显示
+                    boss_list = sorted(list(boss_names))
+                    result = "API返回的BOSS名称列表：\n" + "\n".join(boss_list)
+                    yield event.plain_result(result)
+        except Exception as e:
+            yield event.plain_result(f"调试出错: {str(e)}")
         
     @filter.command("boss")
     async def boss_spawn_api(self, event: AstrMessageEvent):
