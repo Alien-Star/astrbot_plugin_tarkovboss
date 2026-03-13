@@ -63,38 +63,92 @@ class TarkovBossAPIPlugin(Star):
             return f"❌ 请求失败: {str(e)}"
     
     def format_boss_data(self, data: Dict) -> str:
-        '''格式化BOSS数据'''
+        '''格式化BOSS数据为可读文本'''
         try:
             if not data.get("data", {}).get("maps"):
                 return "❌ 没有获取到地图数据"
-            
+            # 地图名称中英文对照
+            map_translation = {
+                "Customs": "海关",
+                "Woods": "森林", 
+                "Lighthouse": "灯塔",
+                "Shoreline": "海岸线",
+                "Reserve": "储备站",
+                "Factory": "工厂",
+                "Laboratory": "实验室",
+                "Interchange": "立交桥",
+                "Streets of Tarkov": "塔科夫街区",
+                "Ground Zero": "中心区",
+                "The Lab": "实验室",
+                "Terminal": "码头"
+            }
+            # BOSS名称中英文对照
+            boss_translation = {
+                "Knight": "骑士（三狗之一）",
+                "Big Pipe": "大根（三狗之一）",
+                "Birdeye": "鸟眼（三狗之一）", 
+                "Partisan": "黑老登",
+                "Cultist Priest": "邪教徒（祭司）",
+                "Cultist": "邪教徒",
+                "Smuggler": "走私者小队",
+                "Zryachiy": "小鹿",
+                "Rogue": "肉鸽",
+                "Glukhar": "大锤",
+                "Raider": "Raider掠夺者",
+                "Reshala": "Re沙拉",
+                "Killa": "Killa",
+                "Tagilla": "大锤",
+                "Shturman": "三枪",
+                "Sanitar": "蓝色动力装甲",
+                "Kaban": "卡班",
+                "Kollontay": "葛朗台",
+                "Russian": "俄军",
+                "Black Division": "黑色军团",
+                "Minotaur": "牛头大锤"
+            }
+
+
+
             maps = data["data"]["maps"]
-            result = ["📊 **塔科夫BOSS刷新率**", "=" * 30]
+            result = ["📊 **塔科夫BOSS刷新率**", "=" * 35]
+            
+            # 按地图名称排序
+            maps.sort(key=lambda x: x.get("name", ""))
             
             for map_data in maps:
-                map_name = map_data.get("name", "未知地图")
+                map_name_en = map_data.get("name", "未知地图")
+                # 转换为中文，如果没有对应翻译则保留英文
+                map_name_cn = map_translation.get(map_name_en, map_name_en)
+                
                 bosses = map_data.get("bosses", [])
                 
                 if bosses:
-                    result.append(f"\n🗺️ **{map_name}**")
+                    result.append(f"\n🗺️ **{map_name_cn}**")
+                    # 按BOSS名称排序
+                    bosses.sort(key=lambda x: x.get("name", ""))
+                    
                     for boss in bosses:
-                        name = boss.get("name", "未知")
-                        chance = boss.get("spawnChance")
+                        boss_name_en = boss.get("name", "未知BOSS")
+                        # 转换为中文
+                        boss_name_cn = boss_translation.get(boss_name_en, boss_name_en)
                         
-                        if chance is None:
+                        spawn_chance = boss.get("spawnChance")
+                        
+                        # 处理概率值
+                        if spawn_chance is None:
                             chance_str = "未知"
-                        elif isinstance(chance, (int, float)):
-                            if chance <= 1:
-                                chance_str = f"{chance*100:.0f}%"
+                        elif isinstance(spawn_chance, (int, float)):
+                            if spawn_chance <= 1:
+                                chance_str = f"{spawn_chance*100:.0f}%"
                             else:
-                                chance_str = f"{chance:.0f}%"
+                                chance_str = f"{spawn_chance:.0f}%"
                         else:
-                            chance_str = str(chance)
+                            chance_str = str(spawn_chance)
                         
-                        result.append(f"  👾 {name}: {chance_str}")
+                        result.append(f"  👾 {boss_name_cn}: {chance_str}")
             
-            result.append("\n" + "=" * 30)
-            result.append("数据来源: Tarkov API")
+            result.append("\n" + "=" * 35)
+            result.append("📌 数据来源: Tarkov API | 实时更新")
             
             return "\n".join(result)
             
