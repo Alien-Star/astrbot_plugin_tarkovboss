@@ -1,5 +1,6 @@
 # main.py
 import aiohttp
+import asyncio
 import json
 from typing import Dict, List, Any
 from astrbot.api.event import filter, AstrMessageEvent
